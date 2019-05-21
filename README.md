@@ -1,3 +1,17 @@
+## start the prisma server
+cd server
+yarn install
+yarn prisma deploy
+yarn start
+
+## start the app
+cd < project folder >
+yarn start
+
+
+
+
+
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
 ## Available Scripts

@@ -38,8 +38,7 @@ class Link extends Component {
             >
               {voteMutation => (
                 <div className="ml1 gray f11" onClick={voteMutation}>
-                  ▲
-              </div>
+                </div>
               )}
             </Mutation>
           )}

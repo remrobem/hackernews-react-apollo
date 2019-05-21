@@ -26,8 +26,6 @@ const FEED_QUERY = gql`
   }
 `
 
-
-
 class LinkList extends Component {
 
   _updateCacheAfterVote = (store, createVote, linkId) => {
