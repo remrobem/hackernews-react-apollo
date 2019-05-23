@@ -47,24 +47,15 @@ const link = split(
   authLink.concat(httpLink)
 )
 
+// define Apollo client - using the GraphQL endpoint and using in memory cache
 const client = new ApolloClient({
   link,
   cache: new InMemoryCache()
 })
 
-// const client = new ApolloClient({
-//   link: authLink.concat(httpLink),
-//   // link: httpLink,
-//   cache: new InMemoryCache()
-// })
 
-// ReactDOM.render(
-//   <ApolloProvider client={client}>
-//     <App />
-//   </ApolloProvider>,
-//   document.getElementById('root')
-// )
-
+// wrap the App in ApolloProvider naming the client
+// wrap entire render in BrowserRouter
 ReactDOM.render(
   <BrowserRouter>
     <ApolloProvider client={client}>

@@ -20,6 +20,10 @@ const LOGIN_MUTATION = gql`
 `
 
 class Login extends Component {
+    // note that constructor with super(props) is not actually needed
+    // and that thios.props.xxxxx is still available
+    // see https://overreacted.io/why-do-we-write-super-props/
+
     state = {
         login: true, // switch between Login and SignUp
         email: '',

@@ -1,82 +1,182 @@
-## start the prisma server
-cd server
-yarn install
-yarn prisma deploy
-yarn start
+# Notes
 
-## start the app
-cd < project folder >
-yarn start
+## Start the prisma server and playground (localhost:4000)
+
+    cd server
+    yarn install
+    yarn prisma deploy
+    yarn start
+
+## Start the app (localhost:3000)
+
+    cd < project folder >
+    yarn start
+
+## Libraries used
+
+### Client
+
+    yarn add
+        apollo-boost
+        react-apollo
+        graphql
+
+## Server directory structure
+
+This app uses free AWS service from Prisma
+<https://us1.prisma.sh/rob-martin/server/dev>
+
+### prisma
+
+- This directory holds all the files that relate to your Prisma setup.
+- The Prisma client is used to access the database in your GraphQL resolvers (similar to an ORM).
+
+### prisma.yml
+
+- the root configuration file for your Prisma project.
+
+### datamodel.prisma
+
+- defines your data model in the GraphQL Schema Definition Language (SDL).
+- When using Prisma, the datamodel is used to describe the database schema.
+
+### src
+
+- This directory holds the source files for your GraphQL server.
+
+### schema.graphql
+
+- Contains your application schema.
+- The application schema defines the GraphQL operations you can send from the frontend.
+- Used by the frontend developer to get the schema layout
+
+### generated/prisma-client
+
+- Contains the auto-generated Prisma client, a type-safe database access library (similar to an ORM).
+
+### resolvers
+
+- Contains the resolver functions for the operations defined in the application schema.
+
+### index.js
+
+- The entry point for your GraphQL server.
+
+## Architectures
+
+3 different kinds of architectures that include a GraphQL server:
+
+- GraphQL server with a connected database
+- GraphQL server that is a thin layer in front of a number of third party or legacy systems and integrates them through a single GraphQL API
+- A hybrid approach of a connected database and third party or legacy systems that can all be accessed through the same GraphQL API
+
+## Resolvers
+
+- Server side
+- The payload of a GraphQL query (or mutation) consists of a set of fields.
+- In the GraphQL server implementation, each of these fields actually corresponds to exactly one function that’s called a resolver.
+- The sole purpose of a resolver function is to fetch the data for its field.
+
+## Apollo Client
+
+- Apollo abstracts away all lower-level networking logic and provides a nice interface to the GraphQL server.
+- In contrast to working with REST APIs, you don’t have to deal with constructing your own HTTP requests any more
+- Instead, you can simply write queries and mutations and send them using an ApolloClient instance.
+- Client defines the endpoint of your GraphQL API so it can deal with the network connections.
+- See /src/index.js
+- Below for simple case
+
+    ```javascript
+    import { ApolloProvider } from 'react-apollo'
+    import { ApolloClient } from 'apollo-client'
+    import { createHttpLink } from 'apollo-link-http'
+    import { InMemoryCache } from 'apollo-cache-inmemory'
 
 
+    // 2
+    const httpLink = createHttpLink({
+    uri: 'http://localhost:4000'
+    })
 
+    // 3
+    const client = new ApolloClient({
+    link: httpLink,
+    cache: new InMemoryCache()
+    })
 
+    // 4
+    ReactDOM.render(
+    <ApolloProvider client={client}>
+        <App />
+    </ApolloProvider>,
+    document.getElementById('root')
+    )
+    serviceWorker.unregister();
+    ```
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+## Dev Steps
 
-## Available Scripts
+1. Create Components
+    - example of 2 components
 
-In the project directory, you can run:
+    ```javascript
+    import React, { Component } from 'react'
 
-### `npm start`
+    class Link extends Component {
+        render() {
+            return (
+                <div>
+                    <div>
+                        {this.props.link.description} ({this.props.link.url})
+                    </div>
+                </div>
+            )
+        }
+    }
 
-Runs the app in the development mode.<br>
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+    export default Link
+    ```
 
-The page will reload if you make edits.<br>
-You will also see any lint errors in the console.
+    ```javascript
+    import React, { Component } from 'react'
+    import Link from './Link'
 
-### `npm test`
+    class LinkList extends Component {
+        render() {
+            const linksToRender = [
+            {
+                id: '1',
+                description: 'Prisma turns your database into a GraphQL API 😎',
+                url: 'https://www.prismagraphql.com',
+            },
+            {
+                id: '2',
+                description: 'The best GraphQL client',
+                url: 'https://www.apollographql.com/docs/react/',
+            },
+            ]
 
-Launches the test runner in the interactive watch mode.<br>
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+            return (
+            <div>{linksToRender.map(link => <Link key={link.id} link={link} />)}</div>
+            )
+        }
+    }
 
-### `npm run build`
+    export default LinkList
+    ```
 
-Builds the app for production to the `build` folder.<br>
-It correctly bundles React in production mode and optimizes the build for the best performance.
+1. Basic setup in App.js to render own app
 
-The build is minified and the filenames include the hashes.<br>
-Your app is ready to be deployed!
+    ```javascript
+    import React, { Component } from 'react'
+    import LinkList from './LinkList'
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+    class App extends Component {
+        render() {
+            return <LinkList />
+        }
+    }
 
-### `npm run eject`
-
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
-
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
-
-Instead, it will copy all the configuration files and the transitive dependencies (Webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
-
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
-
-### Code Splitting
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/code-splitting
-
-### Analyzing the Bundle Size
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size
-
-### Making a Progressive Web App
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app
-
-### Advanced Configuration
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/advanced-configuration
-
-### Deployment
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/deployment
-
-### `npm run build` fails to minify
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify
+    export default App
+    
+```

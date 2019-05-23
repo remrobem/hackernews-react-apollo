@@ -4,6 +4,7 @@ import { Query } from 'react-apollo'
 import gql from 'graphql-tag'
 import { LINKS_PER_PAGE } from './constants'
 
+// The gql function is used to parse the string that contains the GraphQL code
 export const FEED_QUERY = gql`
   query FeedQuery($first: Int, $skip: Int, $orderBy: LinkOrderByInput) {
     feed(first: $first, skip: $skip, orderBy: $orderBy) {
@@ -78,10 +79,11 @@ const NEW_VOTES_SUBSCRIPTION = gql`
 
 class LinkList extends Component {
 
+  // JSX not used in these methods
   _updateCacheAfterVote = (store, createVote, linkId) => {
     const isNewPage = this.props.location.pathname.includes('new')
     const page = parseInt(this.props.match.params.page, 10)
-  
+
     const skip = isNewPage ? (page - 1) * LINKS_PER_PAGE : 0
     const first = isNewPage ? LINKS_PER_PAGE : 100
     const orderBy = isNewPage ? 'createdAt_DESC' : null
@@ -89,7 +91,7 @@ class LinkList extends Component {
       query: FEED_QUERY,
       variables: { first, skip, orderBy }
     })
-  
+
     const votedLink = data.feed.links.find(link => link.id === linkId)
     votedLink.votes = createVote.link.votes
     store.writeQuery({ query: FEED_QUERY, data })
@@ -148,7 +150,7 @@ class LinkList extends Component {
       this.props.history.push(`/new/${nextPage}`)
     }
   }
-  
+
   _previousPage = () => {
     const page = parseInt(this.props.match.params.page, 10)
     if (page > 1) {
@@ -157,16 +159,35 @@ class LinkList extends Component {
     }
   }
 
+  
   render() {
+    // JSX not needed here
     return (
+      // use Apollo's Query component passing the name of the query that will be executed 
+      // and the variables for the query
+      // JSX is used inside the component
+      // <Query /> is a render prop function
+      // look at https://codedaily.io/tutorials/6/Using-Functions-as-Children-and-Render-Props-in-React-Components
+      // for example of render prop function - look to the LoadContent example that uses URL
       <Query query={FEED_QUERY} variables={this._getQueryVariables()}>
+
+        {/* inside <> so JSX required */}
+        {/* anonymous function wrapped in {} (JSX) and all variables wrapped in {} */}
+
         {({ loading, error, data, subscribeToMore }) => {
+          // JSX not needed inside function because function wrapped in {} and transpiler will 
+          // treat everthing in {} as JS
+
+          // display message on screen. This could be a spinner
+          // ?? why does code go thru here after fetching complete. 1st time thru shows fetching message
           if (loading) return <div>Fetching</div>
           if (error) return <div>Error</div>
 
+          // start subscription for auto updates when other user changes data
           this._subscribeToNewLinks(subscribeToMore)
           this._subscribeToNewVotes(subscribeToMore)
 
+          // data coming in from the query (data) has all the selected links
           const linksToRender = data.feed.links
           const isNewPage = this.props.location.pathname.includes('new')
           const pageIndex = this.props.match.params.page
@@ -174,6 +195,7 @@ class LinkList extends Component {
             : 0
 
           return (
+            // render each link in the linksToRender array
             <Fragment>
               {linksToRender.map((link, index) => (
                 <Link

@@ -3,7 +3,8 @@ import LinkList from './LinkList'
 import CreateLink from './CreateLink';
 import Header from './Header'
 import Login from './Login'
-import { Switch, Route, Redirect } from 'react-router-dom'
+// import { Switch, Route, Redirect } from 'react-router-dom'
+import { Switch, Route } from 'react-router-dom'
 import Search from './Search';
 
 class App extends Component {
