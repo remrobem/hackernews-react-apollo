@@ -2,6 +2,7 @@ const bcrypt = require('bcryptjs')
 const jwt = require('jsonwebtoken')
 const { APP_SECRET, getUserId } = require('../utils')
 
+// the { url, description } is destructuring the call post(description: $description, url: $url) (CreateLink.js)
 function post(parent, { url, description }, context) {
   const userId = getUserId(context)
   return context.prisma.createLink({

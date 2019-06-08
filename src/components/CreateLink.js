@@ -4,6 +4,7 @@ import gql from 'graphql-tag'
 import { FEED_QUERY } from './LinkList'
 import { LINKS_PER_PAGE } from './constants'
 
+// the PostMutation name can be anything - not used anywhere
 const POST_MUTATION = gql`
   mutation PostMutation($description: String!, $url: String!) {
     post(description: $description, url: $url) {

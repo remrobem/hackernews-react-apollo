@@ -5,6 +5,7 @@ import gql from 'graphql-tag'
 import { LINKS_PER_PAGE } from './constants'
 
 // The gql function is used to parse the string that contains the GraphQL code
+// the FeedQuery name can be anything - not used anywhere
 export const FEED_QUERY = gql`
   query FeedQuery($first: Int, $skip: Int, $orderBy: LinkOrderByInput) {
     feed(first: $first, skip: $skip, orderBy: $orderBy) {
